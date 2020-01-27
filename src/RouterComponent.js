@@ -1,26 +1,31 @@
 import React from "react";
-import App from './App';
-import SignIn from './SignIn.js'
-import {Redirect, Route, withRouter, BrowserRouter as Router } from 'react-router-dom'
-
+import App from "./App";
+import SignIn from "./SignIn.js";
+import {
+  Redirect,
+  Route,
+  withRouter,
+  BrowserRouter as Router
+} from "react-router-dom";
 
 function isLoggedIn() {
-      console.log('Am intrat')
-      console.log(localStorage.getItem('LoggedIn'))
-      return localStorage.getItem('LoggedIn')!=null
-    }
-
-function RouterComponent(props) {
-
-return (<Router >
-                  <Route exact path="/calendar" render={() => (
-                             isLoggedIn() ? (<App /> ) : ( <Redirect to="/signin"/>  ) )}/>
-
-                     <Route exact path="/signin" component={SignIn} />
-                     <Route exact path="/" render={() => (
-                           isLoggedIn() ? (<Redirect to="/calendar"/>) : (<Redirect to="/signin"/>))}/>
-                  </Router>);
+  console.log(localStorage.getItem("LoggedIn"));
+  return localStorage.getItem("LoggedIn") != null;
 }
 
+const requireAuth = onUserLoggedIn =>
+  isLoggedIn() ? onUserLoggedIn : <Redirect to="/signin" />;
 
-export default withRouter(RouterComponent)
+const calendarRouterRenderer = () => requireAuth(<App />);
+
+const RouterComponent = () => {
+  return (
+    <Router>
+      <Route exact path="/calendar" render={calendarRouterRenderer} />
+      <Route exact path="/signin" component={SignIn} />
+      <Route exact path="/" component={calendarRouterRenderer} />
+    </Router>
+  );
+};
+
+export default withRouter(RouterComponent);
