@@ -11,3 +11,11 @@ export const encodeUrlData = data => {
     })
     .join("&");
 };
+
+export const GetBackendURL = () => {
+  return "https://localhost:44340";
+};
+
+export const datediff = (first, second) => {
+  return Math.round((second - first) / (1000 * 60 * 60 * 24));
+};

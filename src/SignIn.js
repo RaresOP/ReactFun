@@ -7,8 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { useHistory, withRouter } from "react-router-dom";
-
-const xhr = new XMLHttpRequest();
+import { GetBackendURL } from "./Helpers";
 var history;
 
 const useStyles = makeStyles(theme => ({
@@ -40,21 +39,24 @@ const Login = () => {
     password: pwd.value
   };
 
-  fetch("https://localhost:44340/api/wfm/login", {
+  fetch(GetBackendURL() + "/api/wfm/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     credentials: "include",
     body: JSON.stringify(requestData)
-  }).then(response => {
-    if (response !== "fail") {
-      localStorage.setItem("LoggedIn", "true");
-      history.push("/calendar");
-    } else {
-      window.alert(xhr.response);
-    }
-  });
+  })
+    .then(response => response.text())
+    .then(response => {
+      console.log(response);
+      if (response != "fail") {
+        localStorage.setItem("LoggedIn", "true");
+        history.push("/calendar");
+      } else {
+        window.alert(response);
+      }
+    });
 };
 
 const SignIn = props => {
